@@ -8,6 +8,12 @@ import courseUiUx from '../assets/course-ui-ux.jpeg';
 import courseCybersecurity from '../assets/course-cybersecurity.jpeg';
 import courseDigitalMarketing from '../assets/course-digital-marketing.jpg';
 import courseReactMobile from '../assets/course-react-mobile.webp';
+import techProgramsImg from '../assets/5-steps.jpg';
+import networkConsultingImg from '../assets/network-consulting-2.jpg';
+import techConsultingImg from '../assets/tech-consulting.jpg';
+import incubationHubImg from '../assets/incubation-hub.jpg';
+import salesGadgetsImg from '../assets/gadgets.jpg';
+import onlineCoursesImg from '../assets/online-courses.jpg';
 
 export const SITE = {
   name:         'Digitree Innovation',
@@ -124,15 +130,15 @@ export const COURSES = [
   },
 ]
 
-
 export const SERVICES = [
-  { icon: 'fas fa-chalkboard-teacher', title: 'Tech Training Programs',  desc: 'Hands-on bootcamps in web development, data science, cybersecurity, UI/UX — by industry professionals.' },
-  { icon: 'fas fa-video',              title: 'Online Courses',           desc: 'Access our course library from anywhere with structured modules and downloadable certificates.' },
-  { icon: 'fas fa-rocket',             title: 'Incubation Hub',           desc: 'Mentorship, resources, and a collaborative environment for startups to bring ideas to life.' },
-  { icon: 'fas fa-mobile-alt',         title: 'Sale of Gadgets',          desc: 'Buy quality laptops, iPhones, MacBooks, and accessories. Full catalogue on our Shopify store.' },
-  { icon: 'fas fa-handshake',          title: 'Tech Consulting',          desc: 'Advisory services helping organisations leverage digital tools and strategies for growth.' },
-  { icon: 'fas fa-network-wired',      title: 'Community & Networking',   desc: 'A vibrant network of developers, designers, and entrepreneurs across Nigeria.' },
+  { icon: techProgramsImg,     title: 'Tech Training Programs',  desc: 'Hands-on bootcamps in web development, data science, cybersecurity, UI/UX — by industry professionals.' },
+  { icon: onlineCoursesImg,     title: 'Online Courses',           desc: 'Access our course library from anywhere with structured modules and downloadable certificates.' },
+  { icon: incubationHubImg,     title: 'Incubation Hub',           desc: 'Mentorship, resources, and a collaborative environment for startups to bring ideas to life.' },
+  { icon: salesGadgetsImg,      title: 'Sale of Gadgets',          desc: 'Buy quality laptops, iPhones, MacBooks, and accessories. Full catalogue on our Shopify store.' },
+  { icon: techConsultingImg,     title: 'Tech Consulting',          desc: 'Advisory services helping organisations leverage digital tools and strategies for growth.' },
+  { icon: networkConsultingImg,  title: 'Community & Networking',   desc: 'A vibrant network of developers, designers, and entrepreneurs across Nigeria.' },
 ]
+
 
 export const TEAM_MEMBERS = [
   {

@@ -8,7 +8,7 @@ export default function CoursesSection({ onEnroll }) {
         <div className="section-header">
           <div className="section-label">Learn with Us</div>
           <h2 className="section-title">Our Courses</h2>
-          <p className="section-subtitle">Industry-relevant programs · Prices from ₦10,000 – ₦40,000 · Earn a verifiable certificate on completion.</p>
+          <p className="section-subtitle">Industry-relevant programs · Prices from ₦100,000 – ₦300,000 · Earn a verifiable certificate on completion.</p>
         </div>
         <div className="grid-auto-300">
           {COURSES.map(c => (

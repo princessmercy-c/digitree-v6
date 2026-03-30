@@ -97,9 +97,9 @@ export const COURSES = [
     desc: 'Learn network security, ethical hacking basics, and how to protect digital systems.',
     icon: '🔒', image: courseCybersecurity, badge: 'Hot', duration: '5 weeks', level: 'Intermediate', price: 150000,
     plans: [
-      { name: 'Basic',   price: 150000, desc: 'Self-paced video access' },
-      { name: 'Pro',     price: 200000, desc: '+ Live Q&A sessions & feedback' },
-      { name: 'Premium', price: 250000, desc: '+ 1-on-1 mentorship & certificate' },
+      { name: 'Basic',   price: 200000, desc: 'Self-paced video access' },
+      { name: 'Pro',     price: 250000, desc: '+ Live Q&A sessions & feedback' },
+      { name: 'Premium', price: 300000, desc: '+ 1-on-1 mentorship & certificate' },
     ],
   },
   {

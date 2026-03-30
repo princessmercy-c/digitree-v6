@@ -1,9 +1,9 @@
-import { auth } from '../utils/firebase'; 
+import { auth } from '../utils/firebase';
 import React, { useState, useEffect } from 'react'
 import logoImg from '../assets/logo.jpg'
 import '../styles/navbar.css'
 
-export default function Navbar({ cartQty, currentUser, onOpenCart, onOpenLogin, onOpenDash }) {
+export default function Navbar({ cartQty, currentUser, onOpenCart, onOpenLogin, onOpenSignUp, onOpenDash }) {
   const [scrolled,   setScrolled]   = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -50,19 +50,19 @@ export default function Navbar({ cartQty, currentUser, onOpenCart, onOpenLogin, 
           {currentUser ? (
             <>
               <button className="btn btn-outline btn-sm" onClick={onOpenDash}>
-                Dashboard
+                My Courses
               </button>
-              <button className="btn btn-primary btn-sm" onClick={() => auth.signOut()}>
+              <button className="btn btn-ghost btn-sm" onClick={() => auth.signOut()}>
                 Logout
               </button>
             </>
           ) : (
             <>
               <button className="btn btn-outline btn-sm" onClick={onOpenLogin}>
-                Login
+                Log In
               </button>
-              <button className="btn btn-primary btn-sm" onClick={onOpenLogin}>
-                Get Started
+              <button className="btn btn-primary btn-sm" onClick={onOpenSignUp}>
+                Sign Up
               </button>
             </>
           )}
@@ -82,10 +82,25 @@ export default function Navbar({ cartQty, currentUser, onOpenCart, onOpenLogin, 
           {links.map(l => (
             <a key={l.href} href={l.href} className="navbar__mobile-link" onClick={close}>{l.label}</a>
           ))}
-          <button className="btn btn-primary btn-block"
-            onClick={() => { close(); currentUser ? onOpenDash() : onOpenLogin() }}>
-            {currentUser ? 'My Dashboard' : 'Get Started'}
-          </button>
+          {currentUser ? (
+            <>
+              <button className="btn btn-outline btn-block" onClick={() => { close(); onOpenDash() }}>
+                My Courses
+              </button>
+              <button className="btn btn-ghost btn-block" onClick={() => { close(); auth.signOut() }}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn btn-outline btn-block" onClick={() => { close(); onOpenLogin() }}>
+                Log In
+              </button>
+              <button className="btn btn-primary btn-block" onClick={() => { close(); onOpenSignUp() }}>
+                Sign Up
+              </button>
+            </>
+          )}
         </div>
       )}
     </nav>

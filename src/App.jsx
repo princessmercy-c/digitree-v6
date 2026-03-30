@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useStore } from './hooks/useStore';
 import { FEATURED_GADGET } from './utils/constants';
-import { onAuthStateChanged, getRedirectResult } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './utils/firebase';
 
 import Navbar  from './components/Navbar'
@@ -25,111 +25,33 @@ import EnrollModal from './components/EnrollModal'
 import Dashboard   from './components/Dashboard'
 import CertOverlay from './components/CertOverlay'
 
-/* ── Loading Screen ── */
-function LoadingScreen() {
-  return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%)',
-      color: '#fff',
-      textAlign: 'center',
-      gap: '1.5rem',
-    }}>
-      <div style={{
-        width: 48, height: 48,
-        border: '4px solid rgba(255,255,255,0.3)',
-        borderTopColor: '#fff',
-        borderRadius: '50%',
-        animation: 'spin 0.8s linear infinite',
-      }} />
-      <p style={{ fontSize: '1.1rem', fontWeight: 600, opacity: 0.9 }}>Loading...</p>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </div>
-  );
-}
-
-/* ── Protected Route wrapper ── */
-function ProtectedRoute({ user, authReady, children }) {
-  if (!authReady) return <LoadingScreen />;
-  if (!user) return <Navigate to="/" replace />;
-  return children;
-}
-
-/* ── Login Screen ── */
-function LoginScreen({ onOpenAuth }) {
-  useEffect(() => { onOpenAuth(); }, []);
-  return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-dark) 100%)',
-      color: '#fff',
-      textAlign: 'center',
-      padding: '2rem',
-    }}>
-      <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 900, marginBottom: '1rem', letterSpacing: '-1px' }}>
-        Welcome to Digitree Innovation
-      </h1>
-      <p style={{ fontSize: '1.1rem', opacity: 0.8, marginBottom: '2rem', maxWidth: 500 }}>
-        Sign in to access our courses, gadgets, and exclusive content.
-      </p>
-      <button
-        className="btn btn-primary btn-lg"
-        style={{ background: '#fff', color: 'var(--color-primary)', fontWeight: 800, fontSize: '1.05rem', padding: '1rem 2.5rem', borderRadius: 12 }}
-        onClick={onOpenAuth}
-      >
-        Sign In / Create Account
-      </button>
-    </div>
-  );
-}
-
 export default function App() {
-  /* ── All hooks at the very top — no conditional calls ── */
   const store = useStore()
   const [user, setUser] = useState(null)
-  const [authReady, setAuthReady] = useState(false)
   const [cartOpen,    setCartOpen]    = useState(false)
   const [paymentOpen, setPaymentOpen] = useState(false)
   const [authOpen,    setAuthOpen]    = useState(false)
+  const [authMode,    setAuthMode]    = useState('login')
   const [dashOpen,    setDashOpen]    = useState(false)
   const [enrollingId, setEnrollingId] = useState(null)
   const [certData,    setCertData]    = useState({ open: false, courseId: null, studentName: '' })
-  const location = useLocation();
-  const navigate = useNavigate();
 
-  /* ── Auth: handle redirect result + listen to state changes ── */
+  /* ── Auth: listen to Firebase auth state ── */
   useEffect(() => {
-    let unsubscribe;
-
-    // Start listening to auth state immediately (don't wait for redirect)
-    unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setAuthReady(true);
       if (currentUser) {
         store.setCurrentUser(currentUser);
-        if (window.location.pathname === '/') {
-          navigate('/home', { replace: true });
-        }
       }
     });
-
-    // Also handle redirect result (non-blocking)
-    getRedirectResult(auth).catch(() => {});
-
-    return () => { if (unsubscribe) unsubscribe(); };
+    return () => unsubscribe();
   }, []);
 
-  /* ── Helpers (defined after hooks, before JSX) ── */
+  /* ── Helpers ── */
+  const openAuth = (mode = 'login') => { setAuthMode(mode); setAuthOpen(true); }
+
   const openEnroll = (courseId) => {
-    if (!store.currentUser) { setAuthOpen(true); return }
+    if (!user) { openAuth('login'); return }
     setEnrollingId(courseId)
   }
 
@@ -143,9 +65,17 @@ export default function App() {
     setCartOpen(true)
   }
 
-  const handleCheckout    = () => { setCartOpen(false); setPaymentOpen(true) }
+  const handleCheckout = () => {
+    if (!user) { openAuth('login'); return }
+    setCartOpen(false); setPaymentOpen(true)
+  }
   const handlePaymentBack = () => { setPaymentOpen(false); setCartOpen(true) }
   const handlePaymentDone = () => { store.clearCart(); setPaymentOpen(false) }
+
+  const handleOpenDash = () => {
+    if (!user) { openAuth('login'); return }
+    setDashOpen(true)
+  }
 
   const handleShowCert = (courseId) => {
     const mc = store.myCourses.find(m => m.courseId === courseId)
@@ -178,48 +108,25 @@ export default function App() {
 
   return (
     <>
-      {/* Only show Navbar & Footer when authenticated */}
-      {user && (
-        <Navbar
-          cartQty     = {store.cartQty}
-          currentUser = {store.currentUser}
-          onOpenCart  = {() => setCartOpen(true)}
-          onOpenLogin = {() => setAuthOpen(true)}
-          onOpenDash  = {() => setDashOpen(true)}
-        />
-      )}
+      <Navbar
+        cartQty     = {store.cartQty}
+        currentUser = {user}
+        onOpenCart  = {() => setCartOpen(true)}
+        onOpenLogin = {() => openAuth('login')}
+        onOpenSignUp = {() => openAuth('register')}
+        onOpenDash  = {handleOpenDash}
+      />
 
       <Routes>
-        {/* Login gate: show loading while auth resolves, then login or redirect */}
-        <Route path="/" element={
-          !authReady
-            ? <LoadingScreen />
-            : user
-              ? <Navigate to="/home" replace />
-              : <LoginScreen onOpenAuth={() => setAuthOpen(true)} />
-        } />
-
-        {/* Protected home route */}
-        <Route path="/home" element={
-          <ProtectedRoute user={user} authReady={authReady}>
-            {HomePage}
-          </ProtectedRoute>
-        } />
-
-        {/* Protected courses route */}
+        <Route path="/" element={HomePage} />
+        <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="/courses" element={
-          <ProtectedRoute user={user} authReady={authReady}>
-            <main>
-              <CoursesSection onEnroll={openEnroll} />
-            </main>
-          </ProtectedRoute>
+          <main><CoursesSection onEnroll={openEnroll} /></main>
         } />
-
-        {/* Catch-all: redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      {user && <Footer />}
+      <Footer />
 
       {/* Cart sidebar */}
       <CartSidebar
@@ -245,6 +152,7 @@ export default function App() {
       {/* Auth modal */}
       <AuthModal
         open          = {authOpen}
+        initialMode   = {authMode}
         onClose       = {() => setAuthOpen(false)}
         onLogin       = {store.loginUser}
         onRegister    = {store.registerUser}

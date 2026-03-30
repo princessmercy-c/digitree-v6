@@ -95,7 +95,7 @@ export const COURSES = [
   {
     id: 'c4', title: 'Cybersecurity Essentials',
     desc: 'Learn network security, ethical hacking basics, and how to protect digital systems.',
-    icon: '🔒', image: courseCybersecurity, badge: 'Hot', duration: '5 weeks', level: 'Intermediate', price: 150000,
+    icon: '🔒', image: courseCybersecurity, badge: 'Hot', duration: '5 weeks', level: 'Intermediate', price: 200000,
     plans: [
       { name: 'Basic',   price: 200000, desc: 'Self-paced video access' },
       { name: 'Pro',     price: 250000, desc: '+ Live Q&A sessions & feedback' },

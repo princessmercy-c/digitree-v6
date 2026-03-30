@@ -1,20 +1,29 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { auth } from '../utils/firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithRedirect
+  signInWithPopup
 } from "firebase/auth";
 
 const googleProvider = new GoogleAuthProvider();
 
-export default function AuthModal({ open, onClose, onLogin, onRegister, onGoogleLogin }) {
-  const [mode,  setMode]  = useState('login')
+export default function AuthModal({ open, initialMode, onClose, onLogin, onRegister, onGoogleLogin }) {
+  const [mode,  setMode]  = useState(initialMode || 'login')
   const [form,  setForm]  = useState({ name:'', email:'', password:'' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const set = (k,v) => setForm(p => ({ ...p, [k]:v }))
+
+  // Sync mode when modal opens with a specific initialMode
+  useEffect(() => {
+    if (open && initialMode) {
+      setMode(initialMode);
+      setError('');
+      setForm({ name:'', email:'', password:'' });
+    }
+  }, [open, initialMode]);
 
   const handleLogin = async () => {
     setError('');
@@ -48,9 +57,11 @@ export default function AuthModal({ open, onClose, onLogin, onRegister, onGoogle
     setError('');
     setLoading(true);
     try {
-      await signInWithRedirect(auth, googleProvider);
+      await signInWithPopup(auth, googleProvider);
+      onClose();
     } catch (err) {
       setError(err.message.replace('Firebase: ', ''));
+    } finally {
       setLoading(false);
     }
   }

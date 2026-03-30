@@ -15,7 +15,7 @@ export default function Services() {
             <div key={s.title} className="card" style={{ padding:'2rem', position:'relative', overflow:'hidden' }}>
               <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:'linear-gradient(90deg,var(--color-primary),var(--color-primary-bright))' }} />
               <div style={{ width:52, height:52, background:'var(--blue-50)', borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', color:'var(--color-primary)', fontSize:'1.3rem', marginBottom:'1.25rem' }}>
-                <i className={s.icon} />
+                <img src={s.icon} alt={s.title} style={{ width:'32px', height:'32px', objectFit:'contain' }} />
               </div>
               <h3 style={{ fontSize:'1.05rem', fontWeight:700, marginBottom:'0.75rem' }}>{s.title}</h3>
               <p style={{ fontSize:'0.87rem', color:'var(--color-muted)', lineHeight:1.75 }}>{s.desc}</p>
